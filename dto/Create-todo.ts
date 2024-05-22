@@ -1,5 +1,6 @@
+import { IsString } from 'class-validator';
+
 export class CreateTodoDto {
-  id: number;
-  isChecked: boolean;
+  @IsString()
   text: string;
 }

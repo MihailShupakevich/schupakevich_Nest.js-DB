@@ -1,38 +1,41 @@
-import { Controller, Get, Post, Header, Param, Body, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Header,
+  Param,
+  Body,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { CreateTodoDto } from 'dto/Create-todo';
+import { UpdateTodoDto } from 'dto/Update-todo';
 @Controller('Todo')
 export class TodoController {
   @Post()
   @Header('Cache-Control', 'none') //Пользовательский заголок ответа
   async create(@Body() createTodoDto: CreateTodoDto) {
-    return 'This action adds a new todo';
+    return `This action adds a new ${createTodoDto} todo`;
+  }
+  @Get()
+  findAll(): string {
+    return 'This action returns all todo';
   }
 
-  // @Get()
-  // findAll(): string {
-  //   return 'This action returns all cats';
-  // }
-  // @Get(':id')
-  // findOne(@Param() params: any): string {
-  //   console.log(params.id);
-  //   return `This action returns a #${params.id} todo`;
-  // }
-  @Get(':id')
-  findOne(@Param('id') id: string): string {
-    return `This action returns a #${id} todo`;
-  }
-  @Put(':id')
+  @Put()
   update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return `This action updates a #${id} cat`;
+    return `This action updates a #${updateTodoDto} todo`;
   }
 
+  //patch
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return `This action removes a #${id} cat`;
+    return `This action removes a #${id} todo`;
   }
 }
-  @Get()
-  async findAll(): Promise<any[]> {
-    return [];
-  }
-}
+//   @Get()
+//   async findAll(): Promise<any[]> {
+//     return [];
+//   }
+// }
+//получить все таски, 1 таску, установить состояние чебоксов, удалить таску, изменить таску.

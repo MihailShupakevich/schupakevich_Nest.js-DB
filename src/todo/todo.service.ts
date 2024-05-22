@@ -22,7 +22,7 @@ export class TodoService {
   }
 
   async remove(id: string): Promise<void> {
-    const user = await this.findOne(id);
-    await user.destroy();
+    const todo = await this.findOne(id);
+    await todo.destroy();
   }
 }
