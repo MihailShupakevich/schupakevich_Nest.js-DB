@@ -19,13 +19,13 @@ export class TodoController {
 
   @Post()
   @Header('Cache-Control', 'none') //Пользовательский заголок ответа
-  async create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todoService.create(createTodoDto); //создание таски
+  async createTask(@Body() createTodoDto: CreateTodoDto) {
+    return this.todoService.createTask(createTodoDto); //создание таски
   }
 
   @Get()
-  findAll(): string {
-    return 'This action returns all todo'; //верни все таски
+  findAll() {
+    return this.todoService.findAll();
   }
 
   @Put()
