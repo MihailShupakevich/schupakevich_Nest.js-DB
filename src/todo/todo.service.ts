@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import Todo from './todo.model';
 import { CreateTodoDto } from './dto/Create-todo';
+import { UpdateTodoDto } from './dto/Update-todo';
 
 @Injectable()
 export class TodoService {
@@ -10,35 +11,58 @@ export class TodoService {
     private todoModel: typeof Todo,
   ) {}
 
-  async createTask(createTodoDtoTask: CreateTodoDto): Promise<Todo> {
-    const task = await this.todoModel.create(createTodoDtoTask);
-    return task;
+  createTask(createTodoDtoTask: CreateTodoDto): Promise<Todo> {
+    return this.todoModel.create(createTodoDtoTask);
   }
-
   async findAll(): Promise<Todo[]> {
     const tasks = await this.todoModel.findAll();
     return tasks;
   }
-
-  findOne(id: string): Promise<Todo> {
-    return this.todoModel.findOne({
+  async updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
+    const isCheckedFront = updateTodoDto.isChecked;
+    const tasks = await this.todoModel.update(
+      {
+        isChecked: !isCheckedFront,
+      },
+      {
+        where: { isChecked: isCheckedFront },
+      },
+    );
+    return tasks;
+  }
+  async remove(id: number): Promise<string | never> {
+    const count = await this.todoModel.destroy<Todo>({
       where: {
-        id,
+        id: id,
       },
     });
+    if (count === 0) {
+      throw new NotFoundException('Нет такой задачи');
+    }
+    return 'OK';
   }
 
-  async remove(id: string): Promise<void> {
-    const todo = await this.findOne(id);
-    await todo.destroy();
-  }
-
-  async removeAllDoneTasks(isChecked: boolean): Promise<void> {
-    const todos = await this.todoModel.findAll({
+  async removeAllDoneTasks(): Promise<string | never> {
+    const todos = await this.todoModel.destroy<Todo>({
       where: {
         isChecked: true,
       },
     });
-    await todos.destroy();
+    if (todos === 0) {
+      throw new Error('Нет Задач');
+    }
+    return 'Удалены все выполненные задачи';
   }
-} //вставлять код внутрь этой скобочки
+  async updateTask(idTodo: number, updateTodoDto: UpdateTodoDto) {
+    const [count, task] = await this.todoModel.update(updateTodoDto, {
+      where: {
+        id: idTodo,
+      },
+      returning: true,
+    });
+    if (count === 0) {
+      throw new NotFoundException('Такой задачи нет!');
+    }
+    return task;
+  }
+}
