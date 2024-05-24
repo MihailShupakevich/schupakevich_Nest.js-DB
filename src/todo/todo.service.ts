@@ -16,14 +16,13 @@ export class TodoService {
     return this.todoModel.create(createTodoDtoTask);
   }
 
-  async findAll(): Promise<Todo[]> {
-    const tasks = await this.todoModel.findAll();
-    return tasks;
+  findAll(): Promise<Todo[]> {
+    return this.todoModel.findAll();
   }
 
-  async updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
+  updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
     const isCheckedFront = updateTodoDto.isChecked;
-    const tasks = await this.todoModel.update(
+    return this.todoModel.update(
       {
         isChecked: !isCheckedFront,
       },
@@ -31,21 +30,34 @@ export class TodoService {
         where: { isChecked: isCheckedFront },
       },
     );
-    return tasks;
   }
 
-  async remove(id: number): Promise<string | never> {
-    const count = await this.todoModel.destroy<Todo>({
-      where: {
-        id: id,
-      },
-    });
-    if (count === 0) {
-      throw new NotFoundException('Нет такой задачи');
-    }
-    return 'OK';
-  }
+  // async removeTask(id: number): Promise<string | never> {
+  //   const count = await this.todoModel.destroy<Todo>({
+  //     where: {
+  //       id: id,
+  //     },
+  //   });
+  //   if (count === 0) {
+  //     throw new NotFoundException('Нет такой задачи');
+  //   }
+  //   return 'OK';
+  // }
 
+  removeTask(id: number): Promise<string | never> {
+    return this.todoModel
+      .destroy<Todo>({
+        where: {
+          id: id,
+        },
+      })
+      .then((count) => {
+        if (count === 0) {
+          throw new NotFoundException('Нет такой задачи');
+        }
+        return 'OK';
+      });
+  }
   async removeAllDoneTasks(): Promise<string | never> {
     const todos = await this.todoModel.destroy<Todo>({
       where: {
@@ -57,6 +69,7 @@ export class TodoService {
     }
     return 'Удалены все выполненные задачи';
   }
+
   // async removeAllDoneTasks(): Promise<string | never> {
   //   const completedTasks = await this.todoModel.findAll<Todo>({
   //     where: {
@@ -75,16 +88,40 @@ export class TodoService {
   //   return 'Удалены все выполненные задачи';
   // }
 
-  async updateTask(idTodo: number, updateTodoDto: UpdateTodoDto) {
-    const [count, task] = await this.todoModel.update(updateTodoDto, {
-      where: {
-        id: idTodo,
-      },
-      returning: true,
+  // async updateTask(idTodo: number, updateTodoDto: UpdateTodoDto) {
+  //   const [count, task] = await this.todoModel.update(updateTodoDto, {
+  //     where: {
+  //       id: idTodo,
+  //     },
+  //     returning: true,
+  //   });
+  //   if (count === 0) {
+  //     throw new NotFoundException('Такой задачи нет!');
+  //   }
+  //   return task;
+  // }
+  updateTask(
+    idTodo: number,
+    updateTodoDto: UpdateTodoDto,
+  ): Promise<Todo | never> {
+    return new Promise((resolve, reject) => {
+      this.todoModel
+        .update(updateTodoDto, {
+          where: {
+            id: idTodo,
+          },
+          returning: true,
+        })
+        .then(([updatedRows, updatedTasks]) => {
+          if (updatedRows === 0) {
+            reject(new NotFoundException('Такой задачи нет!'));
+          }
+
+          resolve(updatedTasks[0]);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
-    if (count === 0) {
-      throw new NotFoundException('Такой задачи нет!');
-    }
-    return task;
   }
 }

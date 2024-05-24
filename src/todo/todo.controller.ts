@@ -32,19 +32,22 @@ export class TodoController {
   async updateAllTasksStatus(
     @Param()
     @Body()
-    updateTodoDto: UpdateTodoDto, //обновление всех задач
+    updateTodoDto: UpdateTodoDto,
   ) {
     return this.todoService.updateAllTasksStatus(updateTodoDto);
   }
 
   @Patch()
-  updateTask(@Param('id') id: number, @Body() updateTodoDto: UpdateTodoDto) {
+  updateTask(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTodoDto: UpdateTodoDto,
+  ) {
     return this.todoService.updateTask(id, updateTodoDto); //обновление 1 задачи
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number): Promise<string> {
-    return this.todoService.remove(id); //удаление задачи по айди
+    return this.todoService.removeTask(id); //удаление задачи по айди
   }
 
   @Delete()

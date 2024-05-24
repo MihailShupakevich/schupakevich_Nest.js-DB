@@ -10,6 +10,7 @@ module.exports = {
       isChecked: {
         defaultValue: false,
         type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
       text: {
         allowNull: false,
@@ -30,6 +31,6 @@ module.exports = {
   },
 
   down(queryInterface) {
-    return queryInterface.dropTable('ToDo');
+    return queryInterface.dropTable('ToDos');
   },
 };
