@@ -17,11 +17,11 @@ import Todo from './todo/todo.model';
         password: configService.get('POSTGRES_PASSWORD'),
         port: Number(configService.get('POSTGRES_PORT')),
         database: configService.get('POSTGRES_DB'),
-        models: [Todo], //здесь твоя модель
+        models: [Todo],
       }),
       inject: [ConfigService],
     }),
-    TodoModule, //Здессь твой модуль с тасками
+    TodoModule,
   ],
 })
 export class AppModule {}

@@ -6,7 +6,7 @@ import {
   CreatedAt,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'ToDo' })
+@Table({ tableName: 'ToDos' })
 export default class Todo extends Model<Todo> {
   @Column({ defaultValue: false })
   isChecked: boolean;

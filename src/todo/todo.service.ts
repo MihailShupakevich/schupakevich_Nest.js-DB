@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+
 import Todo from './todo.model';
-import { CreateTodoDto } from './dto/Create-todo';
-import { UpdateTodoDto } from './dto/Update-todo';
+import { CreateTodoDto } from './dto/сreate-todo';
+import { UpdateTodoDto } from './dto/update-todo';
 
 @Injectable()
 export class TodoService {
@@ -14,10 +15,12 @@ export class TodoService {
   createTask(createTodoDtoTask: CreateTodoDto): Promise<Todo> {
     return this.todoModel.create(createTodoDtoTask);
   }
+
   async findAll(): Promise<Todo[]> {
     const tasks = await this.todoModel.findAll();
     return tasks;
   }
+
   async updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
     const isCheckedFront = updateTodoDto.isChecked;
     const tasks = await this.todoModel.update(
@@ -30,6 +33,7 @@ export class TodoService {
     );
     return tasks;
   }
+
   async remove(id: number): Promise<string | never> {
     const count = await this.todoModel.destroy<Todo>({
       where: {
@@ -53,6 +57,24 @@ export class TodoService {
     }
     return 'Удалены все выполненные задачи';
   }
+  // async removeAllDoneTasks(): Promise<string | never> {
+  //   const completedTasks = await this.todoModel.findAll<Todo>({
+  //     where: {
+  //       isChecked: true,
+  //     },
+  //   });
+  //   if (completedTasks.length === 0) {
+  //     throw new Error('Нет выполненных задач');
+  //   }
+  //   const idsToDelete = completedTasks.map((task) => task.id);
+  //   await this.todoModel.destroy<Todo>({
+  //     where: {
+  //       id: idsToDelete,
+  //     },
+  //   });
+  //   return 'Удалены все выполненные задачи';
+  // }
+
   async updateTask(idTodo: number, updateTodoDto: UpdateTodoDto) {
     const [count, task] = await this.todoModel.update(updateTodoDto, {
       where: {

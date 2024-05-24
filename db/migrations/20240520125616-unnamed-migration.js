@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('ToDo', {
+  up(queryInterface, Sequelize) {
+    queryInterface.createTable('ToDos', {
       id: {
         primaryKey: true,
         autoIncrement: true,

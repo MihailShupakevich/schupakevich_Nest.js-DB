@@ -9,9 +9,11 @@ import {
   Patch,
   ParseIntPipe,
 } from '@nestjs/common';
-import { CreateTodoDto } from 'src/todo/dto/Create-todo';
-import { UpdateTodoDto } from 'src/todo/dto/Update-todo';
+
+import { CreateTodoDto } from 'src/todo/dto/сreate-todo';
+import { UpdateTodoDto } from 'src/todo/dto/update-todo';
 import { TodoService } from './todo.service';
+
 @Controller('Todo')
 export class TodoController {
   constructor(private todoService: TodoService) {}
