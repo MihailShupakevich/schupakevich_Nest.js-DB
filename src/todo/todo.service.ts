@@ -20,16 +20,36 @@ export class TodoService {
     return this.todoModel.findAll();
   }
 
-  updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
-    const isCheckedFront = updateTodoDto.isChecked;
-    return this.todoModel.update(
-      {
-        isChecked: !isCheckedFront,
-      },
-      {
-        where: { isChecked: isCheckedFront },
-      },
-    );
+  // async updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
+  //   // const isCheckedFront = updateTodoDto.isChecked;
+  //   const [tasks] = await this.todoModel.update(
+  //     {
+  //       isChecked: updateTodoDto.isChecked,
+  //     },
+  //     {
+  //       where: { isChecked: !updateTodoDto.isChecked },
+  //     },
+  //   );
+  //   return tasks;
+  // }
+
+  async changeCheckboxes(changeAllCheckbox: UpdateTodoDto): Promise<string> {
+    try {
+      const [numberOfTasks] = await this.todoModel.update(
+        { isChecked: changeAllCheckbox.isChecked },
+        {
+          where: {
+            isChecked: !changeAllCheckbox.isChecked,
+          },
+        },
+      );
+      if (numberOfTasks === 0) {
+        throw new NotFoundException();
+      }
+      return 'Ok';
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // async removeTask(id: number): Promise<string | never> {

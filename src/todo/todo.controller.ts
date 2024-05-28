@@ -14,7 +14,7 @@ import { CreateTodoDto } from 'src/todo/dto/сreate-todo';
 import { UpdateTodoDto } from 'src/todo/dto/update-todo';
 import { TodoService } from './todo.service';
 
-@Controller('Todo')
+@Controller('todos')
 export class TodoController {
   constructor(private todoService: TodoService) {}
 
@@ -29,15 +29,14 @@ export class TodoController {
   }
 
   @Put()
-  async updateAllTasksStatus(
-    @Param()
+  updateAllTasksStatus(
     @Body()
     updateTodoDto: UpdateTodoDto,
   ) {
-    return this.todoService.updateAllTasksStatus(updateTodoDto);
+    return this.todoService.changeCheckboxes(updateTodoDto);
   }
 
-  @Patch()
+  @Patch(':id')
   updateTask(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTodoDto: UpdateTodoDto,
