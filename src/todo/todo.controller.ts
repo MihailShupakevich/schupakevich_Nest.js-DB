@@ -24,8 +24,8 @@ export class TodoController {
   }
 
   @Get()
-  findAll() {
-    return this.todoService.findAll();
+  findTasks() {
+    return this.todoService.findTasks();
   }
 
   @Put()

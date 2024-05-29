@@ -16,8 +16,10 @@ export class TodoService {
     return this.todoModel.create(createTodoDtoTask);
   }
 
-  findAll(): Promise<Todo[]> {
-    return this.todoModel.findAll();
+  findTasks(): Promise<Todo[]> {
+    return this.todoModel.findAll({
+      order: ['createdAt'],
+    });
   }
 
   // async updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
@@ -33,13 +35,13 @@ export class TodoService {
   //   return tasks;
   // }
 
-  async changeCheckboxes(changeAllCheckbox: UpdateTodoDto): Promise<string> {
+  async changeCheckboxes({ isChecked }: UpdateTodoDto): Promise<string> {
     try {
       const [numberOfTasks] = await this.todoModel.update(
-        { isChecked: changeAllCheckbox.isChecked },
+        { isChecked },
         {
           where: {
-            isChecked: !changeAllCheckbox.isChecked,
+            isChecked: !isChecked,
           },
         },
       );
@@ -47,7 +49,7 @@ export class TodoService {
         throw new NotFoundException();
       }
       return 'Ok';
-    } catch (error) {
+    } catch (error: unknown) {
       console.log(error);
     }
   }
@@ -90,58 +92,17 @@ export class TodoService {
     return 'Удалены все выполненные задачи';
   }
 
-  // async removeAllDoneTasks(): Promise<string | never> {
-  //   const completedTasks = await this.todoModel.findAll<Todo>({
-  //     where: {
-  //       isChecked: true,
-  //     },
-  //   });
-  //   if (completedTasks.length === 0) {
-  //     throw new Error('Нет выполненных задач');
-  //   }
-  //   const idsToDelete = completedTasks.map((task) => task.id);
-  //   await this.todoModel.destroy<Todo>({
-  //     where: {
-  //       id: idsToDelete,
-  //     },
-  //   });
-  //   return 'Удалены все выполненные задачи';
-  // }
-
-  // async updateTask(idTodo: number, updateTodoDto: UpdateTodoDto) {
-  //   const [count, task] = await this.todoModel.update(updateTodoDto, {
-  //     where: {
-  //       id: idTodo,
-  //     },
-  //     returning: true,
-  //   });
-  //   if (count === 0) {
-  //     throw new NotFoundException('Такой задачи нет!');
-  //   }
-  //   return task;
-  // }
-  updateTask(
-    idTodo: number,
-    updateTodoDto: UpdateTodoDto,
-  ): Promise<Todo | never> {
-    return new Promise((resolve, reject) => {
-      this.todoModel
-        .update(updateTodoDto, {
-          where: {
-            id: idTodo,
-          },
-          returning: true,
-        })
-        .then(([updatedRows, updatedTasks]) => {
-          if (updatedRows === 0) {
-            reject(new NotFoundException('Такой задачи нет!'));
-          }
-
-          resolve(updatedTasks[0]);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+  async updateTask(idTodo: number, updateTodoDto: UpdateTodoDto) {
+    const [taskCount, [newTask]] = await this.todoModel.update(updateTodoDto, {
+      where: {
+        id: idTodo,
+      },
+      returning: true,
     });
+    if (taskCount === 0) {
+      new NotFoundException('Нет такой задачи по id');
+    }
+    return newTask;
+    console.log(newTask);
   }
 }
