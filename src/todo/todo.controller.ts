@@ -18,7 +18,7 @@ import { TodoService } from './todo.service';
 export class TodoController {
   constructor(private todoService: TodoService) {}
 
-  @Post() //Пользовательский заголок ответа
+  @Post()
   async createTask(@Body() createTodoDto: CreateTodoDto) {
     return this.todoService.createTask(createTodoDto); //создание таски
   }
@@ -41,12 +41,12 @@ export class TodoController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTodoDto: UpdateTodoDto,
   ) {
-    return this.todoService.updateTask(id, updateTodoDto); //обновление 1 задачи
+    return this.todoService.updateTask(id, updateTodoDto);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number): Promise<string> {
-    return this.todoService.removeTask(id); //удаление задачи по айди
+    return this.todoService.removeTask(id);
   }
 
   @Delete()

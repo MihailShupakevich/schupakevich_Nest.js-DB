@@ -22,19 +22,6 @@ export class TodoService {
     });
   }
 
-  // async updateAllTasksStatus(updateTodoDto: UpdateTodoDto) {
-  //   // const isCheckedFront = updateTodoDto.isChecked;
-  //   const [tasks] = await this.todoModel.update(
-  //     {
-  //       isChecked: updateTodoDto.isChecked,
-  //     },
-  //     {
-  //       where: { isChecked: !updateTodoDto.isChecked },
-  //     },
-  //   );
-  //   return tasks;
-  // }
-
   async changeCheckboxes({ isChecked }: UpdateTodoDto): Promise<string> {
     try {
       const [numberOfTasks] = await this.todoModel.update(
@@ -53,18 +40,6 @@ export class TodoService {
       console.log(error);
     }
   }
-
-  // async removeTask(id: number): Promise<string | never> {
-  //   const count = await this.todoModel.destroy<Todo>({
-  //     where: {
-  //       id: id,
-  //     },
-  //   });
-  //   if (count === 0) {
-  //     throw new NotFoundException('Нет такой задачи');
-  //   }
-  //   return 'OK';
-  // }
 
   removeTask(id: number): Promise<string | never> {
     return this.todoModel
