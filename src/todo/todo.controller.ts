@@ -19,7 +19,7 @@ export class TodoController {
   constructor(private todoService: TodoService) {}
 
   @Post()
-  async createTask(@Body() createTodoDto: CreateTodoDto) {
+  createTask(@Body() createTodoDto: CreateTodoDto) {
     return this.todoService.createTask(createTodoDto); //создание таски
   }
 
