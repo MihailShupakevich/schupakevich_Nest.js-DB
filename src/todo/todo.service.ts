@@ -41,8 +41,8 @@ export class TodoService {
     }
   }
 
-  removeTask(id: number): Promise<string | never> {
-    return this.todoModel
+  async removeTask(id: number): Promise<string | never> {
+    return await this.todoModel
       .destroy<Todo>({
         where: {
           id: id,
